@@ -1,0 +1,65 @@
+<?php echo $this->doctype(); ?>
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <!--<meta charset="ISO-8859-1">-->
+        <?php echo $this->headTitle('iJobs');?>
+
+        <?php echo $this->headMeta()
+            ->appendName('viewport', 'width=device-width, initial-scale=1.0')
+            ->appendHttpEquiv('X-UA-Compatible', 'IE=edge')
+        ?>
+
+        <!-- Le styles -->
+        <?php echo $this->headLink(array('rel' => 'shortcut icon', 'type' => 'image/vnd.microsoft.icon', 'href' => $this->basePath() . '/img/favicon.ico'))
+                ->prependStylesheet($this->basePath('css/app.css'))
+            ->prependStylesheet($this->basePath('css/bootstrap.css'))?>
+        <link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+
+        <!-- Scripts -->
+        <?php echo $this->headScript()
+            ->prependFile($this->basePath('js/bootstrap.js'))
+            ->prependFile($this->basePath('js/bootstrap.min.js'))
+            ->prependFile($this->basePath('js/jquery-3.1.1.min.js'))
+            ->prependFile($this->basePath('js/respond.min.js'), 'text/javascript', array('conditional' => 'lt IE 9',))
+            ->prependFile($this->basePath('js/html5shiv.js'),   'text/javascript', array('conditional' => 'lt IE 9',))
+        ; ?>
+        <script src="https://use.fontawesome.com/a04a00d5b9.js"></script>
+    </head>
+    <body>
+        <div class="container">
+            <nav class="navbar navbar-toggleable-lg navbar-light" style="background-color: rgb(224,226,229)">
+                <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <a class="navbar-brand" href="#">Empresa</a>
+                <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                    <ul class="navbar-nav mr-auto">
+                        <li class="nav-item active">
+                            <a class="nav-link" href="<?php echo $this->url('panel-employments') ?>"><?php echo $this->translate('Empleos') ?><span class="sr-only">(current)</span></a>
+                        </li>
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fa fa-user-circle" aria-hidden="true"></i>
+                                <?php echo $_SESSION['usuario_nombre']; ?>
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                <a class="dropdown-item" href="<?php echo $this->url('panel-login', array('action' => 'logout')); ?>">Cerrar sesión</a>
+                                <a class="dropdown-item" href="#"><?php echo $this->translate('Facturación') ?></a>
+                                <a class="dropdown-item" href="#"><?php echo $this->translate('Perfil') ?></a>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+            <?php echo $this->content; ?>
+            <hr>
+            <footer>
+                <p>&copy; <?php echo date('Y') ?> por iJobs <?php echo $this->translate('Todos los derechos reservados.') ?></p>
+            </footer>
+        </div> <!-- /container -->
+    </body>
+</html>

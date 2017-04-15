@@ -1,0 +1,117 @@
+<div style="height: 200px"></div>
+<div class="container">
+    <div class="login mx-auto" style="width: 400px;">
+        <?php
+        $LoginForm = $this->LoginForm;
+        $LoginForm->prepare();
+        echo $this->form()->openTag($LoginForm);
+        ?>
+        <div class="card text-center">
+            <div class="card-header bg-primary text-white">
+                Login
+            </div>
+            <div class="card-block">
+                <br />
+                <div id="form" class="form-group">
+                    <div class="form-group">
+                        <div class="center input-group">
+                            <div class="input-group-addon"><i class="fa fa-user fa-lg" aria-hidden="true"></i></div>
+                            <?php echo $this->formText($LoginForm->get('usuario_nombre')); ?>
+                        </div>
+                        <br />
+                        <div class="center input-group">
+                            <div class="input-group-addon"><i class="fa fa-lock fa-lg" aria-hidden="true"></i></div>
+                            <?php echo $this->formPassword($LoginForm->get('usuario_contrasena')); ?>
+                        </div>
+                        <br />
+                        <div class="center input-field">
+                            <?php echo $this->formRow($LoginForm->get('submit')); ?>
+                        </div>
+                        <?php // echo $this->formCollection($LoginForm); ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <?php
+        //echo $this->formCollection($LoginForm);
+        echo $this->form()->closeTag(); ?>
+    </div>
+</div>
+
+<script type="text/javascript">
+    // Eventos focusout
+    $("#usuario_nombre").focusout(function() {
+        if ($("#usuario_nombre").val().length > 0) {
+            if($("#usuario_nombre").hasClass('alert') == true){
+                $("input#usuario_nombre").removeClass('alert alert-danger');
+            }
+        }
+    });
+
+    $("#usuario_contrasena").focusout(function() {
+        if ($("#usuario_contrasena").val().length > 0) {
+            if($("#usuario_contrasena").hasClass('alert') == true){
+                $("input#usuario_contrasena").removeClass('alert alert-danger');
+            }
+        }
+    });
+
+    // Al dar clic en botón Entrar
+    $("#entrar").click(function() {
+        //var formElement = document.forms.namedItem("loginForm");
+        //var formData = new FormData(formElement);
+
+        //Obtenemos el valor del campo usuario_nombre
+        var usuario_nombre = $("input#usuario_nombre").val();
+        //Obtenemos el valor del campo usuario_contrasena
+        var usuario_contrasena = $("input#usuario_contrasena").val();
+        //Construimos la variable que se guardará en el data del Ajax para pasar a la url que procesará los datos
+        var dataString = 'usuario_nombre=' + usuario_nombre + '&usuario_contrasena=' + usuario_contrasena;
+
+        $.ajax({
+            type: "POST",
+            url: "<?php $this->url('panel-login', array('action'=>'login'));?>",
+            dataType : 'json',
+            //data: formData,
+            data: dataString,
+            jsonpCallback: 'callback',
+            success: function(data) {
+                if (data.errorForm){
+                    $.each( data.errorForm, function( keys, values ) {
+                        $.each( values, function( key, value ) {
+                            if(key == "usuario_nombre"){
+                                if (value != null){
+                                    $("input#usuario_nombre").addClass('alert alert-danger').attr('placeholder', value)
+                                }else{
+                                    $("input#usuario_nombre").removeClass('alert alert-danger')
+                                }
+                            }
+                            if(key == "usuario_contrasena"){
+                                if (value != null){
+                                    $("input#usuario_contrasena").addClass('alert alert-danger').attr('placeholder', value)
+                                }else{
+                                    $("input#usuario_contrasena").removeClass('alert alert-danger')
+                                }
+                            }
+                        })
+                    })
+                }
+                if(data.error){
+                    alert("Entro (data.error");
+                    $.each( data.error, function( key, value ) {
+                        alert(key);
+                        alert(value);
+                    })
+                }
+                if(data.success){
+                    $(location).attr('href', 'http://nucleodediagnostico.local/employments');
+                }
+            },
+            error: function(){
+                alert("Entro error");
+            }
+        });
+
+        return false;
+    });
+</script>
