@@ -1,0 +1,253 @@
+<?php session_start(); session_destroy(); ?>
+<?php $this->headTitle("Registrar Empresa | "); ?>
+<div class="bg-success">
+    <div class="container py-5">
+        <div class="row">
+            <div class="col hidden-md-down text-center">
+                <img src="<?php echo $this->basePath('img/img-registro/registro.png') ?>" class="img-fluid" alt="Responsive image">
+            </div>
+            <div class="col">
+                <div class="card">
+                    <div class="card-header bg-warning text-white text-center">
+                        <h3>Registra tu empresa sin costo.</h3>
+                    </div>
+                    <div class="card-block">
+                        <form id="formEmpresa">
+                            <!-- Empresa -->
+                            <div id="formEmpresaNombre" class="form-group">
+                                <label for=empresa_nombre">Nombre de la empresa <span class="text-danger">*</span></label>
+                                <input name="empresa_nombre" class="form-control" type="text">
+                            </div>
+                            <div id="formEmpresaLogoURL" class="form-group">
+                                <label for="empresa_logo_url">Logo de la empresa</label>
+                                <input name="empresa_logo_url" class="form-control" type="file" accept=".pdf, .png, .jpg, .jpeg, .ico">
+                                <div id="empresa_logo_url_peso" class="text-danger text-center"></div>
+                            </div>
+                            <div id="formEmpresaRazonSocial" class="form-group">
+                                <label for="empresas_razon_social">Razón Social</label>
+                                <input name="empresas_razon_social" class="form-control" type="text">
+                            </div>
+                            <div id="formEmpresaRFC" class="form-group">
+                                <label for="empresa_rfc">RFC</label>
+                                <input name="empresa_rfc" class="form-control" type="text">
+                            </div>
+                            <div id="formEmpresaDireccionFiscal" class="form-group">
+                                <label for="empresa_direccion_fiscal">Dirección Fiscal</label>
+                                <input id="empresa_direccion_fiscal" class="form-control" type="text">
+                            </div>
+                            <!-- Empresa Contacto -->
+                            <div id="formEmpresaContactoNombre" class="form-group">
+                                <label for=empresacontacto_nombre">Nombre del contacto de la empresa <span class="text-danger">*</span></label>
+                                <input name="empresacontacto_nombre" class="form-control" type="text">
+                            </div>
+                            <div id="formEmpresaContactoEmail" class="form-group">
+                                <label for="empresacontacto_email">Email del contacto de la empresa <span class="text-danger">*</span></label>
+                                <input name="empresacontacto_email" class="form-control" type="email">
+                            </div>
+                            <div id="formEmpresaContactoTelefono" class="form-group">
+                                <label for="empresacontacto_telefono">Teléfono fijo</label>
+                                <input name="empresacontacto_telefono" class="form-control" type="tel">
+                            </div>
+                            <div id="formEmpresaContactoMovil" class="form-group">
+                                <label for="empresacontacto_movil">Teléfono Móvil</label>
+                                <input name="empresacontacto_movil" class="form-control" type="tel">
+                            </div>
+                            <div id="formEmpresaTerminos" class="form-check" align="center">
+                                <label class="form-check-label">
+                                    <input name="form_empresa_terminos" type="checkbox" class="form-check-input">
+                                    He leído y concuerdo con la&nbsp;&nbsp;<a href="http://ijobs.com/files/pdf/aviso_politica_privacidad.pdf" target="_blank">Política de Privacidad</a>.
+                                </label>
+                                <div id="form_empresa_terminos_checked" class="text-danger text-center"></div>
+                            </div>
+                            <!-- reCAPTCHA -->
+                            <div class="g-recaptcha my-3" data-sitekey="6Le-ukIUAAAAAFWL3No2Qz1oWNFP0PQnqqGEUpFT" align="center" data-callback="callbackReCaptchaEmpresa"></div>
+                            <div id="validarReCaptchaEmpresa" class="text-danger text-center mb-2"></div>
+                            <div class="text-center">
+                                <div id="registrar_empresa" class="btn btn-success cursor-pointer">Registrarme</div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal enviadoTrueEmpresa -->
+<div id="enviadoTrueEmpresa" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="enviadoTrueEmpresaLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Registro de empresa</h5>
+                <button id="modalBolsaTrabajoMensajeEnviadoCerrar" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-success" role="alert">
+                    <strong>¡Registro exitoso!</strong>
+                </div>
+            </div>
+            <div id="modalBolsaTrabajoMensajeEnviadoCerrar" class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal enviadoFalseEmpresa -->
+<div id="enviadoFalseEmpresa" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="enviadoFalseEmpresaLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Registro de empresa</h5>
+                <button id="modalBolsaTrabajoMensajeNoEnviadoCerrar"  type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-danger" role="alert">
+                    <p><strong>Error de registro.</strong> favor de intrntar mas tarde.</p>
+                    <p><span id="modal_error_detalles"></span></p>
+                </div>
+            </div>
+            <div id="modalBolsaTrabajoMensajeNoEnviadoCerrar"  class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+    var validarReCaptchaEmpresa = false;
+    function callbackReCaptchaEmpresa(){
+        validarReCaptchaEmpresa = true
+    }
+
+    $("#registrar_empresa").click(function() {
+
+        var valido = true;
+
+        // Actializar existencias
+        //Obtenemos el valor del input de empresa_nombre
+        var empresaNombre = $("input[name='empresa_nombre']").val();
+        //Obtenemos el valor del input de empresa_logo_url
+        var empresaLogoURL = $("input[name='empresa_logo_url']");
+        //Obtenemos el valor del input de empresa_rfc
+        var empresaRFC = $("input[name='empresa_rfc']").val();
+        //Obtenemos el valor del input de empresa_direccion_fiscal
+        var empresaDireccionFiscal = $("input[name='empresa_direccion_fiscal']").val();
+        //Obtenemos el valor del textarea empresacontacto_nombre
+        var empresaContactoNombre = $("input[name='empresacontacto_nombre']").val();
+        //Obtenemos el valor del textarea empresacontacto_email
+        var empresaContactoEmail = $("input[name='empresacontacto_email']").val();
+        //Obtenemos el valor del input de empresacontacto_telefono
+        var empresaContactoTelefono = $("input[name='empresacontacto_telefono']").val();
+        //Obtenemos el valor del input de empresacontacto_movil
+        var empresaContactoMovil = $("input[name='empresacontacto_movil']").val();
+
+        //Obtenemos el valor del input de terminos
+        var formEmpresaTerminos = $("input[name='form_empresa_terminos']");
+
+        if(empresaNombre.length > 0){
+            $('#formEmpresaNombre').removeClass('has-danger');
+            $('#formEmpresaNombre').addClass('has-success');
+            $('input#empresa_nombre').removeClass('form-control-danger');
+            $('input#empresa_nombre').addClass('form-control-success');
+        }else{
+            valido = false;
+            $('#formEmpresaNombre').removeClass('has-success');
+            $('#formEmpresaNombre').addClass('has-danger');
+            $('input#empresa_nombre').removeClass('form-control-success');
+            $('input#empresa_nombre').addClass('form-control-danger');
+        }
+
+        if(empresaContactoNombre.length > 0){
+            $('#formEmpresaContactoNombre').removeClass('has-danger');
+            $('#formEmpresaContactoNombre').addClass('has-success');
+            $('input#empresacontacto_nombre').removeClass('form-control-danger');
+            $('input#empresacontacto_nombre').addClass('form-control-success');
+        }else{
+            valido = false;
+            $('#formEmpresaContactoNombre').removeClass('has-success');
+            $('#formEmpresaContactoNombre').addClass('has-danger');
+            $('input#empresacontacto_nombre').removeClass('form-control-success');
+            $('input#empresacontacto_nombre').addClass('form-control-danger');
+        }
+
+        var correoRegex = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+        if(correoRegex.test(empresaContactoEmail)){
+            $('#formEmpresaContactoEmail').removeClass('has-danger');
+            $('#formEmpresaContactoEmail').addClass('has-success');
+            $('input#empresacontacto_email').removeClass('form-control-danger');
+            $('input#empresacontacto_email').addClass('form-control-success');
+        }else{
+            valido = false;
+            $('#formEmpresaContactoEmail').removeClass('has-success');
+            $('#formEmpresaContactoEmail').addClass('has-danger');
+            $('input#empresacontacto_email').removeClass('form-control-success');
+            $('input#empresacontacto_email').addClass('form-control-danger');
+        }
+
+        if(empresaLogoURL.val().length > 0) {
+            var extension = empresaLogoURL.val().substring(empresaLogoURL.val().lastIndexOf("."));
+            // Validamos que el archivo sea pdf o doc
+            if (extension != ".pdf" && extension != ".png" && extension != ".jpg" && extension != ".jpeg" && extension != ".ico") {
+                valido = false;
+                $('#empresa_logo_url_peso').text("El formato no es valido. Formatos permitidos: pdf, png, jpg, jpeg y ico.");
+            } else {
+                $('#empresa_logo_url_peso').text("");
+                // Si el archivo pesa mas de 1MB
+                if (empresaLogoURL[0].files[0].size > 1000000) {
+                    valido = false;
+                    $('#empresa_logo_url_peso').text("El peso máximo permitido en subida de archivos es de 1MB.")
+                } else {
+                    $('#empresa_logo_url_peso').text("");
+                    $('#formEmpresaLogoURL').removeClass('has-danger');
+                    $('#formEmpresaLogoURL').addClass('has-success');
+                    $('input#empresa_logo_url').removeClass('form-control-danger');
+                    $('input#empresa_logo_url').addClass('form-control-success');
+                }
+            }
+        }
+
+        if(formEmpresaTerminos.is(':checked') == false){
+            valido = false;
+            $('#form_empresa_terminos_checked').text("Favor de confirmar política de privacidad.")
+        }else{
+            $('#form_empresa_terminos_checked').text("")
+        }
+
+        if(validarReCaptchaEmpresa == false){
+            valido = false;
+            $('#validarReCaptchaEmpresa').text("Favor de validar el reCaptcha.")
+        }else{
+            $('#validarReCaptchaEmpresa').text("")
+        }
+
+        if(valido == true){
+            var formElement = document.forms.namedItem("formEmpresa");
+            var formData = new FormData(formElement);
+            $.ajax({
+                type: "POST",
+                url: "<?php echo $this->url('website-registrarme/empresa');?>",
+                dataType : 'json',
+                processData: false,
+                contentType: false,
+                enctype: 'multipart/form-data',
+                data: formData,
+                jsonpCallback: 'callback',
+                success: function(data) {
+                    if(data.enviado == true){
+                        $('#enviadoTrueEmpresa').modal('show');
+                    }else{
+                        $('#modal_error_detalles').text(data.detalles);
+                        $('#enviadoFalseEmpresa').modal('show');
+                    }
+                },
+                error: function(){
+                    $('#modal_error_detalles').text(data.detalles);
+                    $('#enviadoFalseEmpresa').modal('show');
+                }
+            });
+        }
+    });
+</script>

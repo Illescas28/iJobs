@@ -1,0 +1,97 @@
+<!-- Inicio Form Vacantes -->
+<div class="container my-2">
+    <div class="row">
+        <div class="col-12 col-sm-3">
+            <label>Área:</label>
+            <select id="vacante_area" class="form-control">
+                <option value="">Selecciona una área</option>
+                <?php foreach($this->areas_laborales as $arealaboralKey => $arealaboralValor): ?>
+                    <option value="<?php echo $arealaboralValor['arealaboral_clave']; ?>"><?php echo $arealaboralValor['arealaboral_nombre']; ?></option>';
+                <?php endforeach; ?>
+            </select>
+        </div>
+        <div class="col-12 col-sm-3">
+            <label>Estado:</label>
+            <select id="vacante_lugar" class="form-control">
+                <option value="">Selecciona un estado</option>
+                <?php foreach($this->estados as $estadoKey => $estadoValor): ?>
+                    <option value="<?php echo $estadoValor['sepomex_idestado']; ?>"><?php echo $estadoValor['sepomex_estado']; ?></option>';
+                <?php endforeach; ?>
+            </select>
+        </div>
+        <div class="col-12 col-sm-3">
+            <label>Puesto/empresa:</label>
+            <input id="vacante_clave" type="text" class="form-control" >
+        </div>
+        <div class="col-12 col-sm-3 text-center" style="margin-top: 2rem">
+            <button id="vacantes_buscar" class="btn btn-primary cursor-pointer"><i class="fa fa-search mr-2"></i>Buscar</button>
+        </div>
+    </div>
+</div>
+<hr />
+<!-- Fin Form Vacantes -->
+<!-- start Items -->
+<div class="container">
+    <div class="alert alert-info alert-dismissible fade show" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        Vacantes disponibles: <strong> <?php echo $this->vacantes->getNbResults() ?></strong>
+    </div>
+    <?php foreach ($this->vacantes as $vacante) :?>
+        <div class="card text-center">
+            <div class="card">
+                <h3 class="card-header">
+                    <?php echo $vacante->getVacanteNombre(); ?>
+                </h3>
+                <div class="card-block">
+                    <h4 class="card-title"><?php echo $vacante->getSucursales()->getSucursalNombre() ?></h4>
+                    <p class="card-text"><?php echo $vacante->getVacanteHorario() ?></p>
+                    <p class="card-text"><?php echo "$" . number_format($vacante->getVacanteSueldo()) . " " . $vacante->getVacanteSueldoTipoPago() ?></p>
+                    <a href="<?php echo $this->url('website-vacantes/vacante', array('idVacante' => $vacante->getVacanteId()));?>" class="btn btn-primary">Ver detalles</a>
+                </div>
+            </div>
+            <div class="card-footer text-muted">
+                <?php echo "Publicado el: " . date('d-m-Y H:i:s', strtotime($vacante->getVacanteFechaInicia())) ?>
+            </div>
+        </div>
+        <br />
+    <?php endforeach; ?>
+    <!-- End Items -->
+    <!-- Start Paginate -->
+    <?php if($this->vacantes->haveToPaginate()): ?>
+        <nav aria-label="...">
+            <ul class="pagination justify-content-center">
+                <?php if ($this->vacantes->isFirstPage() == false): ?>
+                    <li class="page-item">
+                        <a class="page-link" href="<?php echo $this->url('website-vacantes/page', array('idPage' => $this->vacantes->getFirstPage()));?>">Primera</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="<?php echo $this->url('website-vacantes/page', array('idPage' => $this->vacantes->getPreviousPage()));?>">Anterior</a>
+                    </li>
+                <?php endif; ?>
+                <?php for($i=1; $i <= $this->vacantes->getLastPage(); $i++): ?>
+                    <?php if ($this->vacantes->getPage() == $i) :?>
+                        <li class="page-item active">
+                        <span class="page-link"><?php echo $i ?><span class="sr-only">(current)</span>
+                        </span>
+                        </li>
+                    <?php else: ?>
+                        <li class="page-item"><a class="page-link" href="<?php echo $this->url('website-vacantes/page', array('idPage' => $i));?>"><?php echo $i ?></a></li>
+                    <?php endif; ?>
+
+                <?php endfor; ?>
+                <?php if ($this->vacantes->isLastPage() == false): ?>
+                    <li class="page-item">
+                        <a class="page-link" href="<?php echo $this->url('website-vacantes/page', array('idPage' => $this->vacantes->getNextPage()));?>">Siguiente</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="<?php echo $this->url('website-vacantes/page', array('idPage' => $this->vacantes->getLastPage()));?>">Última</a>
+                    </li>
+                <?php endif; ?>
+
+            </ul>
+        </nav>
+    <?php endif; ?>
+    <!-- End Paginate -->
+</div>

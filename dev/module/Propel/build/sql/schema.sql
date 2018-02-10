@@ -4,29 +4,21 @@
 SET FOREIGN_KEY_CHECKS = 0;
 
 -- ---------------------------------------------------------------------
--- arealaboral
+-- areaslaborales
 -- ---------------------------------------------------------------------
 
-DROP TABLE IF EXISTS `arealaboral`;
+DROP TABLE IF EXISTS `areaslaborales`;
 
-CREATE TABLE `arealaboral`
+CREATE TABLE `areaslaborales`
 (
     `arealaboral_id` INTEGER NOT NULL AUTO_INCREMENT,
-    `arealaboral_nombre` VARCHAR(45) NOT NULL,
+    `arealaboral_clave` VARCHAR(45) NOT NULL,
+    `arealaboral_nombre` VARCHAR(255) NOT NULL,
+    `arealaboral_fecha_alta` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `arealaboral_usuario_alta` INTEGER NOT NULL,
+    `arealaboral_fecha_modifica` DATETIME,
+    `arealaboral_usuario_modifica` INTEGER,
     PRIMARY KEY (`arealaboral_id`)
-) ENGINE=InnoDB;
-
--- ---------------------------------------------------------------------
--- correo
--- ---------------------------------------------------------------------
-
-DROP TABLE IF EXISTS `correo`;
-
-CREATE TABLE `correo`
-(
-    `correo_id` INTEGER NOT NULL AUTO_INCREMENT,
-    `correo_nombre` VARCHAR(45) NOT NULL,
-    PRIMARY KEY (`correo_id`)
 ) ENGINE=InnoDB;
 
 -- ---------------------------------------------------------------------
@@ -39,29 +31,70 @@ CREATE TABLE `educacion`
 (
     `educacion_id` INTEGER NOT NULL AUTO_INCREMENT,
     `educacion_nombre` VARCHAR(45) NOT NULL,
+    `educacion_descripcion` TEXT,
+    `educacion_fecha_alta` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `educacion_usuario_alta` INTEGER NOT NULL,
+    `educacion_fecha_modifica` DATETIME,
+    `educacion_usuario_modifica` INTEGER,
     PRIMARY KEY (`educacion_id`)
 ) ENGINE=InnoDB;
 
 -- ---------------------------------------------------------------------
--- empresa
+-- empresacontactos
 -- ---------------------------------------------------------------------
 
-DROP TABLE IF EXISTS `empresa`;
+DROP TABLE IF EXISTS `empresacontactos`;
 
-CREATE TABLE `empresa`
+CREATE TABLE `empresacontactos`
+(
+    `empresacontacto_id` INTEGER NOT NULL AUTO_INCREMENT,
+    `empresa_id` INTEGER NOT NULL,
+    `empresacontacto_nombre` VARCHAR(255) NOT NULL,
+    `empresacontacto_email` VARCHAR(255) NOT NULL,
+    `empresacontacto_telefono` VARCHAR(45),
+    `empresacontacto_movil` VARCHAR(45),
+    `empresacontacto_fecha_alta` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `empresacontacto_usuario_alta` INTEGER NOT NULL,
+    `empresacontacto_fecha_modifica` DATETIME,
+    `empresacontacto_usuario_modifica` INTEGER,
+    PRIMARY KEY (`empresacontacto_id`),
+    INDEX `empresa_id` (`empresa_id`),
+    CONSTRAINT `empresa_id_empresacontratos`
+        FOREIGN KEY (`empresa_id`)
+        REFERENCES `empresas` (`empresa_id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+-- ---------------------------------------------------------------------
+-- empresas
+-- ---------------------------------------------------------------------
+
+DROP TABLE IF EXISTS `empresas`;
+
+CREATE TABLE `empresas`
 (
     `empresa_id` INTEGER NOT NULL AUTO_INCREMENT,
     `empresa_nombre` VARCHAR(255) NOT NULL,
+    `empresa_logo_url` TEXT,
+    `empresas_razon_social` VARCHAR(255),
+    `empresa_rfc` VARCHAR(45),
+    `empresa_direccion_fiscal` TEXT,
+    `empresa_estatus` TINYINT(1) DEFAULT 1 NOT NULL,
+    `empresa_fecha_alta` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `empresa_usuario_alta` INTEGER NOT NULL,
+    `empresa_fecha_actualiza` DATETIME,
+    `empresa_usuario_modifica` INTEGER,
     PRIMARY KEY (`empresa_id`)
 ) ENGINE=InnoDB;
 
 -- ---------------------------------------------------------------------
--- postulante
+-- postulantes
 -- ---------------------------------------------------------------------
 
-DROP TABLE IF EXISTS `postulante`;
+DROP TABLE IF EXISTS `postulantes`;
 
-CREATE TABLE `postulante`
+CREATE TABLE `postulantes`
 (
     `postulante_id` INTEGER NOT NULL AUTO_INCREMENT,
     `vacante_id` INTEGER NOT NULL,
@@ -72,16 +105,21 @@ CREATE TABLE `postulante`
     `postulante_telefono` VARCHAR(15) NOT NULL,
     `postulante_enlace` VARCHAR(255),
     `postulante_mensaje` VARCHAR(1020) NOT NULL,
-    `postulante_curriculum_vitae` VARCHAR(255) NOT NULL,
+    `postulante_cv_url` TEXT NOT NULL,
     `postulante_educacion_estatus` enum('trunco','pasante','titulado','cursando'),
-    `postulante_educacion_certificado` enum('si','no'),
+    `postulante_educacion_certificado` TINYINT(1),
+    `postulante_estatus` TINYINT(1) DEFAULT 1 NOT NULL,
+    `postulante_fecha_alta` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `postulante_usuario_alta` INTEGER NOT NULL,
+    `postulante_fecha_modifica` DATETIME,
+    `postulante_usuario_modifica` INTEGER,
     PRIMARY KEY (`postulante_id`),
     INDEX `vacante_id` (`vacante_id`),
     INDEX `arealaboral_id` (`arealaboral_id`),
     INDEX `educacion_id` (`educacion_id`),
     CONSTRAINT `arealaboral_id_postulante`
         FOREIGN KEY (`arealaboral_id`)
-        REFERENCES `arealaboral` (`arealaboral_id`)
+        REFERENCES `areaslaborales` (`arealaboral_id`)
         ON UPDATE CASCADE
         ON DELETE CASCADE,
     CONSTRAINT `educacion_id_postulante`
@@ -91,7 +129,7 @@ CREATE TABLE `postulante`
         ON DELETE CASCADE,
     CONSTRAINT `vacante_id_postulante`
         FOREIGN KEY (`vacante_id`)
-        REFERENCES `vacante` (`vacante_id`)
+        REFERENCES `vacantes` (`vacante_id`)
         ON UPDATE CASCADE
         ON DELETE CASCADE
 ) ENGINE=InnoDB;
@@ -118,24 +156,28 @@ CREATE TABLE `sepomex`
 ) ENGINE=InnoDB;
 
 -- ---------------------------------------------------------------------
--- sucursal
+-- sucursales
 -- ---------------------------------------------------------------------
 
-DROP TABLE IF EXISTS `sucursal`;
+DROP TABLE IF EXISTS `sucursales`;
 
-CREATE TABLE `sucursal`
+CREATE TABLE `sucursales`
 (
     `sucursal_id` INTEGER NOT NULL AUTO_INCREMENT,
     `empresa_id` INTEGER NOT NULL,
     `sepomex_id` INTEGER,
     `sucursal_nombre` VARCHAR(45),
     `sucursal_calle_numero` VARCHAR(45),
+    `sucursal_fecha_alta` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `sucursal_usuario_alta` INTEGER NOT NULL,
+    `sucursal_fecha_modifica` DATETIME,
+    `sucursal_usuario_modifica` INTEGER,
     PRIMARY KEY (`sucursal_id`),
     INDEX `empresa_id` (`empresa_id`),
     INDEX `sepomex_id` (`sepomex_id`),
     CONSTRAINT `empresa_id_sucursal`
         FOREIGN KEY (`empresa_id`)
-        REFERENCES `empresa` (`empresa_id`)
+        REFERENCES `empresas` (`empresa_id`)
         ON UPDATE CASCADE
         ON DELETE CASCADE,
     CONSTRAINT `sepomex_id_sucursal`
@@ -146,26 +188,43 @@ CREATE TABLE `sucursal`
 ) ENGINE=InnoDB;
 
 -- ---------------------------------------------------------------------
--- usuario
+-- usuarios
 -- ---------------------------------------------------------------------
 
-DROP TABLE IF EXISTS `usuario`;
+DROP TABLE IF EXISTS `usuarios`;
 
-CREATE TABLE `usuario`
+CREATE TABLE `usuarios`
 (
     `usuario_id` INTEGER NOT NULL AUTO_INCREMENT,
-    `usuario_nombre` VARCHAR(45) NOT NULL,
+    `empresa_id` INTEGER,
+    `postulante_id` INTEGER,
     `usuario_contrasena` VARCHAR(16) NOT NULL,
-    PRIMARY KEY (`usuario_id`)
+    `usuario_fecha_alta` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `usuario_usuario_alta` INTEGER NOT NULL,
+    `usuario_fecha_modifica` DATETIME,
+    `usuario_usuario_modifica` INTEGER,
+    PRIMARY KEY (`usuario_id`),
+    INDEX `empresa_id` (`empresa_id`),
+    INDEX `postulante_id` (`postulante_id`),
+    CONSTRAINT `empresa_id`
+        FOREIGN KEY (`empresa_id`)
+        REFERENCES `empresas` (`empresa_id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    CONSTRAINT `postulante_id`
+        FOREIGN KEY (`postulante_id`)
+        REFERENCES `postulantes` (`postulante_id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
 -- ---------------------------------------------------------------------
--- vacante
+-- vacantes
 -- ---------------------------------------------------------------------
 
-DROP TABLE IF EXISTS `vacante`;
+DROP TABLE IF EXISTS `vacantes`;
 
-CREATE TABLE `vacante`
+CREATE TABLE `vacantes`
 (
     `vacante_id` INTEGER NOT NULL AUTO_INCREMENT,
     `sucursal_id` INTEGER NOT NULL,
@@ -179,38 +238,15 @@ CREATE TABLE `vacante`
     `vacante_fecha_termina` DATETIME,
     `vacante_visitas` INTEGER DEFAULT 0,
     `vacante_estatus` enum('activo','inactivo') DEFAULT 'inactivo' NOT NULL,
-    `vacante_fecha` DATETIME,
+    `vacante_fecha_alta` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `vacante_usuario_alta` INTEGER NOT NULL,
+    `vacante_fecha_modifica` DATETIME,
+    `vacante_usuario_modifica` INTEGER,
     PRIMARY KEY (`vacante_id`),
     INDEX `sucursal_id` (`sucursal_id`),
     CONSTRAINT `sucursal_id_vacante`
         FOREIGN KEY (`sucursal_id`)
-        REFERENCES `sucursal` (`sucursal_id`)
-        ON UPDATE CASCADE
-        ON DELETE CASCADE
-) ENGINE=InnoDB;
-
--- ---------------------------------------------------------------------
--- vacantecorreo
--- ---------------------------------------------------------------------
-
-DROP TABLE IF EXISTS `vacantecorreo`;
-
-CREATE TABLE `vacantecorreo`
-(
-    `vacantecorreo_id` INTEGER NOT NULL AUTO_INCREMENT,
-    `vacante_id` INTEGER NOT NULL,
-    `correo_id` INTEGER NOT NULL,
-    PRIMARY KEY (`vacantecorreo_id`),
-    INDEX `vacante_id` (`vacante_id`),
-    INDEX `correo_id` (`correo_id`),
-    CONSTRAINT `correo_id_vacantecorreo`
-        FOREIGN KEY (`correo_id`)
-        REFERENCES `correo` (`correo_id`)
-        ON UPDATE CASCADE
-        ON DELETE CASCADE,
-    CONSTRAINT `vacante_id_vacantecorreo`
-        FOREIGN KEY (`vacante_id`)
-        REFERENCES `vacante` (`vacante_id`)
+        REFERENCES `sucursales` (`sucursal_id`)
         ON UPDATE CASCADE
         ON DELETE CASCADE
 ) ENGINE=InnoDB;

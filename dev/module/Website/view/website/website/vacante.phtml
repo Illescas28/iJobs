@@ -1,0 +1,53 @@
+<!-- Inicio Form Vacantes -->
+<div class="container my-2">
+    <div class="row">
+        <div class="col-12 col-sm-3">
+            <label>Área:</label>
+            <select id="vacante_area" class="form-control">
+                <option value="">Selecciona una área</option>
+                <?php foreach($this->areas_laborales as $arealaboralKey => $arealaboralValor): ?>
+                    <option value="<?php echo $arealaboralValor['arealaboral_clave']; ?>"><?php echo $arealaboralValor['arealaboral_nombre']; ?></option>';
+                <?php endforeach; ?>
+            </select>
+        </div>
+        <div class="col-12 col-sm-3">
+            <label>Estado:</label>
+            <select id="vacante_lugar" class="form-control">
+                <option value="">Selecciona un estado</option>
+                <?php foreach($this->estados as $estadoKey => $estadoValor): ?>
+                    <option value="<?php echo $estadoValor['sepomex_idestado']; ?>"><?php echo $estadoValor['sepomex_estado']; ?></option>';
+                <?php endforeach; ?>
+            </select>
+        </div>
+        <div class="col-12 col-sm-3">
+            <label>Puesto/empresa:</label>
+            <input id="vacante_clave" type="text" class="form-control" >
+        </div>
+        <div class="col-12 col-sm-3 text-center" style="margin-top: 2rem">
+            <button id="vacantes_buscar" class="btn btn-primary cursor-pointer"><i class="fa fa-search mr-2"></i>Buscar</button>
+        </div>
+    </div>
+</div>
+<hr />
+<!-- Fin Form Vacantes -->
+<!-- Inicio Items -->
+<div class="container">
+    <div class="card text-center">
+        <div class="card">
+            <h3 class="card-header">
+                <?php echo $this->vacante['vacante_nombre']; ?>
+            </h3>
+            <div class="card-block">
+                <h4 class="card-title"><?php echo $this->vacante['vacante_sucursal']; ?></h4>
+                <p class="card-text"><?php echo $this->vacante['vacante_horario'] ?></p>
+                <p class="card-text"><?php echo "$" . number_format($this->vacante['vacante_sueldo']) . " " . $this->vacante['vacante_sueldo_tipo_pago'] ?></p>
+                <p class="card-text"><?php echo $this->vacante['vacante_descripcion'] ?></p>
+                <div class="btn btn-primary">Postularme</div>
+            </div>
+        </div>
+        <div class="card-footer text-muted">
+            <?php echo "Publicado el: " . date('d-m-Y H:i:s', strtotime($this->vacante['vacante_fecha_inicia'])); ?>
+        </div>
+    </div>
+</div>
+<!-- Fin Items -->

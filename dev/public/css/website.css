@@ -1,0 +1,13 @@
+footer a, footer a:hover, footer a:visited, footer a:checked, footer a:focus{
+    text-decoration: none;
+    color: #636c72;
+}
+.registrarme{
+    padding: 0.5em;
+}
+.iniciar_sesion{
+    padding: 0.5em;
+}
+.cursor-pointer{
+    cursor: pointer;
+}

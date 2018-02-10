@@ -9,9 +9,10 @@
     "homepage": "http://framework.zend.com/",
     "require": {
         "php": ">=5.3.3",
-        "zendframework/zendframework": "2.3.*",
+        "zendframework/zendframework": "2.4.*",
         "propel/propel1": "~1.7.1",
-        "phpmailer/phpmailer": "~5.2"
+        "phpmailer/phpmailer": "~5.2",
+        "dino/dompdf-module": "dev-master"
     },
     "autoload": { "classmap": ["module/Propel/build/classes/"] }
 }
